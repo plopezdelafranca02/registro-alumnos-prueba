@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Alumnos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #registrationForm {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            margin: auto;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 80%;
+            padding: 6px; 
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px; 
+            display: inline-block; 
+        }
+
+        button {
+            background-color: #4CAF50; 
+            color: white;
+            border: none;
+            padding: 6px; 
+            border-radius: 5px;
+            cursor: pointer;
+            width: 84%; 
+            font-size: 14px; 
+            display: inline-block; 
+            margin-top: 10px; 
+        }
+
+        button:hover {
+            background-color: #45a049; 
+        }
+
+        #message {
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #viewTableButton {
+            background-color: #008CBA; 
+            width: 84%; 
+            margin-top: 10px;
+        }
+
+        #viewTableButton:hover {
+            background-color: #007B9E;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registro de Alumnos</h1>
+
+    <div id="message"></div> <!-- Contenedor para mostrar mensajes -->
+
+    <form id="registrationForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono" required>
+
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" name="edad" min="0" required>
+
+        <label for="grado">Grado:</label>
+        <select id="grado" name="grado" required>
+            <option value="" disabled selected>Selecciona un grado</option>
+            <option value="1º de Primaria">1º de Primaria</option>
+            <option value="2º de Primaria">2º de Primaria</option>
+            <option value="3º de Primaria">3º de Primaria</option>
+            <option value="4º de Primaria">4º de Primaria</option>
+            <option value="5º de Primaria">5º de Primaria</option>
+            <option value="6º de Primaria">6º de Primaria</option>
+            <option value="1º de Secundaria">1º de Secundaria</option>
+            <option value="2º de Secundaria">2º de Secundaria</option>
+            <option value="3º de Secundaria">3º de Secundaria</option>
+            <option value="4º de Secundaria">4º de Secundaria</option>
+        </select>
+
+        <label for="fecha_inscripcion">Fecha de Inscripción:</label>
+        <input type="date" id="fecha_inscripcion" name="fecha_inscripcion" required>
+
+        <button type="submit">Registrar</button>
+        <button type="button" id="viewTableButton" onclick="window.location.href='/alumnos'">Ver Tabla de Alumnos</button>
+    </form>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Previene la recarga de la pagina
+
+            // Validacion de campos
+            const email = document.getElementById('email').value;
+            const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value;
+            const edad = document.getElementById('edad').value;
+            const grado = document.getElementById('grado').value;
+            const fecha_inscripcion = document.getElementById('fecha_inscripcion').value;
+
+            if (!nombre || !email || !telefono || !edad || !grado || !fecha_inscripcion) {
+                document.getElementById('message').innerHTML = '<p>Todos los campos son obligatorios.</p>';
+                document.getElementById('message').style.color = 'red';
+                return;
+            }
+
+            // Validacion del formato del correo
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular para validar email
+            if (!emailPattern.test(email)) {
+                document.getElementById('message').innerHTML = '<p>Por favor, introduce un correo electrónico válido.</p>';
+                document.getElementById('message').style.color = 'red';
+                return;
+            }
+
+            // Validacion del formato del telefono
+            const telefonoPattern = /^\d{9}$/; // Expresión regular para 9 dígitos
+            if (!telefonoPattern.test(telefono)) {
+                document.getElementById('message').innerHTML = '<p>El teléfono debe contener exactamente 9 números.</p>';
+                document.getElementById('message').style.color = 'red';
+                return;
+            }
+
+            // Si las validaciones son correctas, enviamos el formulario
+            const formData = new FormData(this);
+            const data = new URLSearchParams(formData).toString();
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: data
+            })
+            .then(response => response.text())
+            .then(response => {
+                document.getElementById('message').innerHTML = '<p>' + response + '</p>';
+                document.getElementById('message').style.color = 'green'; // Muestra mensaje de exito
+                this.reset(); // Limpia los campos del formulario
+            })
+            .catch(() => {
+                document.getElementById('message').innerHTML = '<p>Error al registrar el alumno.</p>';
+                document.getElementById('message').style.color = 'red'; // Muestra mensaje de error
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Alumnos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0; 
+            background: white; 
+            border-radius: 5px; 
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px; 
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #555;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9; 
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        a {
+            display: inline-block; 
+            background-color: #4CAF50; 
+            color: white;
+            padding: 10px 15px; 
+            border-radius: 5px;
+            text-decoration: none; 
+            text-align: center;
+            margin: 20px auto;
+            max-width: 200px; 
+            transition: background-color 0.3s; 
+        }
+
+        a:hover {
+            background-color: #45a049; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Alumnos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Edad</th>
+                <th>Grado</th>
+                <th>Fecha de Inscripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% alumnos.forEach(alumno => { %> <!-- Itera sobre cada alumno en la lista -->
+                <tr>
+                    <td><%= alumno.id %></td>
+                    <td><%= alumno.nombre %></td>
+                    <td><%= alumno.email %></td>
+                    <td><%= alumno.telefono %></td>
+                    <td><%= alumno.edad %></td>
+                    <td><%= alumno.grado %></td>
+                    <td><%= new Date(alumno.fecha_inscripcion).toLocaleDateString('es-ES') %></td> <!-- Fecha formateada -->
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <a href="/">Volver al registro</a> <!-- Enlace para volver a la pagina de registro -->
+</body>
+</html>
